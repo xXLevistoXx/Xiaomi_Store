@@ -1,0 +1,151 @@
+Скрипт Базы данных:
+-- Database: Xiaomi_store
+
+CREATE DATABASE "Xiaomi_store"
+    WITH
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'Russian_Russia.1251'
+    LC_CTYPE = 'Russian_Russia.1251'
+    LOCALE_PROVIDER = 'libc'
+    TABLESPACE = pg_default
+    CONNECTION LIMIT = -1
+    IS_TEMPLATE = False;
+	
+CREATE TABLE IF NOT EXISTS public.categories
+(
+    id uuid NOT NULL,
+    name character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT categories_pkey PRIMARY KEY (id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.categories
+    OWNER to postgres;
+	
+CREATE TABLE IF NOT EXISTS public.order_items
+(
+    id uuid NOT NULL,
+    order_id uuid NOT NULL,
+    product_id uuid NOT NULL,
+    CONSTRAINT order_items_pkey PRIMARY KEY (id),
+    CONSTRAINT fkbioxgbv59vetrxe0ejfubep1w FOREIGN KEY (order_id)
+        REFERENCES public.orders (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT fkocimc7dtr037rh4ls4l95nlfi FOREIGN KEY (product_id)
+        REFERENCES public.products (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.order_items
+    OWNER to postgres;
+	
+CREATE TABLE IF NOT EXISTS public.orders
+(
+    id uuid NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    status_id uuid NOT NULL,
+    user_id uuid NOT NULL,
+    CONSTRAINT orders_pkey PRIMARY KEY (id),
+    CONSTRAINT fk32ql8ubntj5uh44ph9659tiih FOREIGN KEY (user_id)
+        REFERENCES public.users (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT fksskkpl1vd8t45wcvx150udmvo FOREIGN KEY (status_id)
+        REFERENCES public.statuses (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.orders
+    OWNER to postgres;
+CREATE TABLE IF NOT EXISTS public.product_images
+(
+    id uuid NOT NULL,
+    product_id uuid NOT NULL,
+    image_url character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT product_images_pkey PRIMARY KEY (id),
+    CONSTRAINT product_images_product_id_fkey FOREIGN KEY (product_id)
+        REFERENCES public.products (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.product_images
+    OWNER to postgres;
+CREATE TABLE IF NOT EXISTS public.products
+(
+    id uuid NOT NULL,
+    description character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    name character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    price double precision NOT NULL,
+    stock integer NOT NULL,
+    category_id uuid NOT NULL,
+    CONSTRAINT products_pkey PRIMARY KEY (id),
+    CONSTRAINT fkog2rp4qthbtt2lfyhfo32lsw9 FOREIGN KEY (category_id)
+        REFERENCES public.categories (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.products
+    OWNER to postgres;
+CREATE TABLE IF NOT EXISTS public.statuses
+(
+    id uuid NOT NULL,
+    name character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT statuses_pkey PRIMARY KEY (id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.statuses
+    OWNER to postgres;
+CREATE TABLE IF NOT EXISTS public.users
+(
+    id uuid NOT NULL,
+    email character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    first_name character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    last_name character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    password character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT users_pkey PRIMARY KEY (id),
+    CONSTRAINT uk6dotkott2kjsp8vw4d0m25fb7 UNIQUE (email)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.users
+    OWNER to postgres;
+	
+CREATE TABLE IF NOT EXISTS public.wishlists
+(
+    id uuid NOT NULL,
+    product_id uuid NOT NULL,
+    user_id uuid,
+    CONSTRAINT wishlists_pkey PRIMARY KEY (id),
+    CONSTRAINT fk330pyw2el06fn5g28ypyljt16 FOREIGN KEY (user_id)
+        REFERENCES public.users (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT fkl7ao98u2bm8nijc1rv4jobcrx FOREIGN KEY (product_id)
+        REFERENCES public.products (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.wishlists
+    OWNER to postgres;
+	
