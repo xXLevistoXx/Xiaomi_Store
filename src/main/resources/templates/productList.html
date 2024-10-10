@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Товары</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .container {
+        margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+<div th:insert="blocks/header"></div>
+<div class="container">
+  <h2>Товары</h2>
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Категория</th>
+      <th>Название</th>
+      <th>Описание</th>
+      <th>Цена</th>
+      <th>Количество</th>
+      <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="product : ${products}">
+      <td th:text="${product.id}"></td>
+      <td th:text="${product.category.name}"></td>
+      <td th:text="${product.name}"></td>
+      <td th:text="${product.description}"></td>
+      <td th:text="${product.price}"></td>
+      <td th:text="${product.stock}"></td>
+      <td>
+        <form th:action="@{/products/update}" method="post" th:object="${product}">
+          <input type="hidden" name="id" th:value="${product.id}">
+          <select class="form-control" name="category.id" th:field="*{category.id}" required>
+            <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+          </select>
+          <input type="text" class="form-control" name="name" th:value="${product.name}" required>
+          <input type="text" class="form-control" name="description" th:value="${product.description}" required>
+          <input type="text" class="form-control" name="price" th:value="${product.price}" required>
+          <input type="text" class="form-control" name="stock" th:value="${product.stock}" required>
+          <button type="submit" class="btn btn-primary">Обновить</button>
+        </form>
+        <form th:action="@{/products/delete}" method="post">
+          <input type="hidden" name="id" th:value="${product.id}">
+          <button type="submit" class="btn btn-danger">Удалить</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <h3>Добавить Товар</h3>
+  <form th:action="@{/products/add}" method="post" th:object="${product}">
+    <div class="form-group">
+      <label for="category">Категория</label>
+      <select class="form-control" id="category" name="category.id" th:field="*{category.id}" required>
+        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="name">Название</label>
+      <input type="text" class="form-control" id="name" name="name" th:field="*{name}" required>
+    </div>
+    <div class="form-group">
+      <label for="description">Описание</label>
+      <input type="text" class="form-control" id="description" name="description" th:field="*{description}" required>
+    </div>
+    <div class="form-group">
+      <label for="price">Цена</label>
+      <input type="text" class="form-control" id="price" name="price" th:field="*{price}" required>
+    </div>
+    <div class="form-group">
+      <label for="stock">Количество</label>
+      <input type="text" class="form-control" id="stock" name="stock" th:field="*{stock}" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Добавить</button>
+  </form>
+</div>
+</body>
+</html>

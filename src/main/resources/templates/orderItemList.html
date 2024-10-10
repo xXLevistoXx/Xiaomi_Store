@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Заказ Товар</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+<div th:insert="blocks/header"></div>
+<div class="container">
+    <h2>Заказ Товар</h2>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>ID Заказа</th>
+            <th>Товар</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="orderItem : ${orderItems}">
+            <td th:text="${orderItem.id}"></td>
+            <td th:text="${orderItem.order.id}"></td>
+            <td th:text="${orderItem.product.name}"></td>
+            <td>
+                <form th:action="@{/orderItems/update}" method="post" th:object="${orderItem}">
+                    <input type="hidden" name="id" th:value="${orderItem.id}">
+                    <select class="form-control" name="order.id" th:field="*{order.id}" required>
+                        <option th:each="order : ${orders}" th:value="${order.id}" th:text="${order.id}"></option>
+                    </select>
+                    <select class="form-control" name="product.id" th:field="*{product.id}" required>
+                        <option th:each="product : ${products}" th:value="${product.id}" th:text="${product.name}"></option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">Обновить</button>
+                </form>
+                <form th:action="@{/orderItems/delete}" method="post">
+                    <input type="hidden" name="id" th:value="${orderItem.id}">
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <h3>Добавить Заказ-Товар</h3>
+    <form th:action="@{/orderItems/add}" method="post" th:object="${orderItem}">
+        <div class="form-group">
+            <label for="order">Заказ</label>
+            <select class="form-control" id="order" name="order.id" th:field="*{order.id}" required>
+                <option th:each="order : ${orders}" th:value="${order.id}" th:text="${order.id}"></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="product">Товар</label>
+            <select class="form-control" id="product" name="product.id" th:field="*{product.id}" required>
+                <option th:each="product : ${products}" th:value="${product.id}" th:text="${product.name}"></option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Добавить</button>
+    </form>
+</div>
+</body>
+</html>

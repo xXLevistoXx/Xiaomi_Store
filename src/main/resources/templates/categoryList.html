@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Категории</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .container {
+        margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+<div th:insert="blocks/header"></div>
+<div class="container">
+  <h2>Категории</h2>
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Название</th>
+      <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="category : ${categories}">
+      <td th:text="${category.id}"></td>
+      <td th:text="${category.name}"></td>
+      <td>
+        <form th:action="@{/categories/update}" method="post" th:object="${category}">
+          <input type="hidden" name="id" th:value="${category.id}">
+          <input type="text" name="name" th:value="${category.name}" required>
+          <button type="submit" class="btn btn-primary">Обновить</button>
+        </form>
+        <form th:action="@{/categories/delete}" method="post">
+          <input type="hidden" name="id" th:value="${category.id}">
+          <button type="submit" class="btn btn-danger">Удалить</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <h3>Добавить Категорию</h3>
+  <form th:action="@{/categories/add}" method="post" th:object="${category}">
+    <div class="form-group">
+      <label for="name">Название</label>
+      <input type="text" class="form-control" id="name" name="name" th:field="*{name}" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Добавить</button>
+  </form>
+</div>
+</body>
+</html>

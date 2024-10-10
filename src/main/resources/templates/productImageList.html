@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Изображения Продуктов</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .container {
+        margin-top: 50px;
+    }
+    .image-container {
+        width: 100px;
+        height: 100px;
+        background-size: cover;
+        background-position: center;
+    }
+  </style>
+</head>
+<body>
+<div th:insert="blocks/header"></div>
+<div class="container">
+  <h2>Изображения Продуктов</h2>
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Название Товара</th>
+      <th>Изображение</th>
+      <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="productImage : ${productImages}">
+      <td th:text="${productImage.id}"></td>
+      <td th:text="${productImage.product.name}"></td>
+      <td>
+        <a th:href="${productImage.imageUrl}" target="_blank">Открыть изображение</a>
+        <div class="image-container" th:style="'background-image: url(' + ${productImage.imageUrl} + ');'"></div>
+      </td>
+      <td>
+        <form th:action="@{/product-images/update}" method="post" th:object="${productImage}">
+          <input type="hidden" name="id" th:value="${productImage.id}">
+          <select class="form-control" name="product.id" th:field="*{product.id}" required>
+            <option th:each="product : ${products}" th:value="${product.id}" th:text="${product.name}"></option>
+          </select>
+          <input type="text" class="form-control" name="imageUrl" th:value="${productImage.imageUrl}" required>
+          <button type="submit" class="btn btn-primary">Обновить</button>
+        </form>
+        <form th:action="@{/product-images/delete}" method="post">
+          <input type="hidden" name="id" th:value="${productImage.id}">
+          <button type="submit" class="btn btn-danger">Удалить</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <h3>Добавить Изображение Продукта</h3>
+  <form th:action="@{/product-images/add}" method="post" th:object="${productImage}">
+    <div class="form-group">
+      <label for="product">Товар</label>
+      <select class="form-control" id="product" name="product.id" th:field="*{product.id}" required>
+        <option th:each="product : ${products}" th:value="${product.id}" th:text="${product.name}"></option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="imageUrl">URL Изображения</label>
+      <input type="text" class="form-control" id="imageUrl" name="imageUrl" th:field="*{imageUrl}" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Добавить</button>
+  </form>
+</div>
+</body>
+</html>
